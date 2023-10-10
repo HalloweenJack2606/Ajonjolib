@@ -14,22 +14,23 @@ function App() {
     ];
 
     const [myValues, setMyValues] = useState([]);
+    const [showLuminarias, setShowLuminarias] = useState(true);
 
     useEffect(() => {
-        console.log(myValues)
-    }, [myValues]);
+        console.log(showLuminarias)
+    }, [showLuminarias]);
 
     return (
         <div className="App">
             <div style={{
                 margin: '1rem',
             }}>
-                <Select searchable multi value={myValues} options={options} onChange={(data) => setMyValues(data)}></Select>
+                <Select searchable multi options={options} value={myValues} onChange={(data) => setMyValues(data)}/>
 
                 <div style={{
                     margin: '1rem'
                 }}>
-                    <Checkbox label={'default'}/>
+                    <Checkbox label={'default'} value={showLuminarias} onChange={(data) => {setShowLuminarias(data)}}/>
                     <Checkbox label={'right'} labelPosition={'right'}/>
                     <Checkbox label={'left'} labelPosition={'left'}/>
                     <Checkbox label={'top'} labelPosition={'top'}/>

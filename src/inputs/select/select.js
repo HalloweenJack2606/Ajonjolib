@@ -111,10 +111,11 @@ export default function Select({ searchable, options, value, onChange, placehold
                     {searchable && (
                         <div ref={selectedTextRef}
                              contentEditable={true}
+                             suppressContentEditableWarning={true}
                              onClick={() => {setSelectedText(''); setSearchTerm(''); setIsOpen(true);}}
                              onInput={(e) => {setSearchTerm(e.currentTarget.textContent); setIsOpen(true);}}
                              className={styles.searchInput}
-                        >Search...</div>
+                        />
                     )}
                 </div>
                 <div style={{ borderLeft: '1px solid #ccc', paddingLeft: '0.5rem' }}>
