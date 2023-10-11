@@ -25,7 +25,7 @@ function App() {
             <div style={{
                 margin: '1rem',
             }}>
-                <Select searchable multi options={options} value={myValues} onChange={(data) => setMyValues(data)}/>
+                <Select searchable multi options={options} value={myValues} onChange={(data) => setMyValues(data)} showQuantity placeholder={'Grupos'}/>
 
                 <div style={{
                     margin: '1rem'

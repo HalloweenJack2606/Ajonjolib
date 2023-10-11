@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import styles from './select.module.css';
 
-export default function Select({ searchable, options, value, onChange, placeholder, className, style, disabled, multi }) {
+export default function Select({ searchable, options, value, onChange, placeholder, className, style, disabled, multi, showQuantity }) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const dropdownRef = useRef(null);
@@ -105,7 +105,7 @@ export default function Select({ searchable, options, value, onChange, placehold
             >
                 <div style={{ display: 'flex', width: '100%' }}>
                     <div>
-                        {selectedOptionNames.join(', ') || placeholder || (!searchable && 'Select an option')}
+                        {showQuantity ? (placeholder + " (" + selectedOptionNames.length.toString() + ")") : selectedOptionNames.join(', ') || placeholder || (!searchable && 'Select an option')}
                     </div>
                     {/* Search input (as a div capturing keys) */}
                     {searchable && (
