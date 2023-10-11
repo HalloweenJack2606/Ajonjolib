@@ -3,21 +3,22 @@ import styles from './searchbox.module.css';
 import {faSearch} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-export default function SearchBox({value, onChange, onInput, className, style, disabled}) {
+export default function SearchBox({ value, onChange, onInput, className, style, disabled, placeholder }) {
     const [searchTerm, setSearchTerm] = useState(value);
+    const [focused, setFocused] = useState(false);
     const contentEditableRef = useRef(null);
 
     useEffect(() => {
         if (onChange) onChange(searchTerm);
-    }, [searchTerm])
+    }, [searchTerm]);
 
     const search = () => {
-        if(onInput) onInput(searchTerm);
-    }
+        if (onInput) onInput(searchTerm);
+    };
 
     const handleEnterKey = (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault()
+            e.preventDefault();
             search();
         }
     };
@@ -26,12 +27,21 @@ export default function SearchBox({value, onChange, onInput, className, style, d
         <div className={className} style={style}>
             <div className={styles.container}>
                 <div
+                    style={{
+                        color: !focused && !searchTerm ? '#999' : '#000',
+                    }}
                     contentEditable={true}
                     ref={contentEditableRef}
                     onKeyDown={handleEnterKey}
-                    onInput={(e) => {setSearchTerm(e.currentTarget.textContent);}}
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
+                    onInput={(e) => {
+                        setSearchTerm(e.currentTarget.textContent);
+                    }}
                     className={styles.input}
-                />
+                >
+                    {!focused && !searchTerm && placeholder}
+                </div>
 
                 <div className={styles.searchIcon} onClick={() => search()}>
                     <FontAwesomeIcon icon={faSearch} color={'#CCC'} />
