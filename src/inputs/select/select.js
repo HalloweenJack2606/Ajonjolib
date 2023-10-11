@@ -7,6 +7,7 @@ export default function Select({ searchable, options, value, onChange, placehold
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const dropdownRef = useRef(null);
+    const iconRef = useRef(null);
     const [selectedOptionValues, setSelectedOptionValues] = useState([]);
     const [selectedOptionNames, setSelectedOptionNames] = useState([]);
     const selectedTextRef = useRef(null);
@@ -21,10 +22,12 @@ export default function Select({ searchable, options, value, onChange, placehold
 
     const handleOutsideClick = (event) => {
         if (
-            dropdownRef.current &&
-            !dropdownRef.current.contains(event.target)
+            (dropdownRef.current &&
+                !dropdownRef.current.contains(event.target)) &&
+            (iconRef.current &&
+                !iconRef.current.contains(event.target))
         ) {
-            if(selectedTextRef.current) {
+            if (selectedTextRef.current) {
                 selectedTextRef.current.blur();
             }
             setIsOpen(false);
@@ -34,28 +37,42 @@ export default function Select({ searchable, options, value, onChange, placehold
     const toggleOption = (optionValue, optionName) => {
         setSearchTerm('');
         setSelectedText();
-        if (multi) {
-            // If multi-select is enabled, toggle the selected option
+
+        if (optionValue === 'selectAll') {
+            const allOptionValues = options.map(option => option.value);
+            // Check if all options are currently selected
+            const allSelected = allOptionValues.every(value => selectedOptionValues.includes(value));
+            if (allSelected) {
+                // If all are selected, deselect all
+                setSelectedOptionValues([]);
+                setSelectedOptionNames([]);
+                if (onChange) onChange([]);
+            } else {
+                // If not all are selected, select all
+                setSelectedOptionValues(allOptionValues);
+                setSelectedOptionNames(options.map(option => option.name));
+                if (onChange) onChange(allOptionValues);
+            }
+        } else if (multi) {
             const index = selectedOptionValues.indexOf(optionValue);
             if (index === -1) {
-                const newValues = [...selectedOptionValues, optionValue]
+                const newValues = [...selectedOptionValues, optionValue];
                 setSelectedOptionValues(newValues);
                 setSelectedOptionNames([...selectedOptionNames, optionName]);
-                if(onChange) onChange(newValues);
+                if (onChange) onChange(newValues);
             } else {
-                const newValues = selectedOptionValues.filter((obtainedValue) => obtainedValue !== optionValue);
+                const newValues = selectedOptionValues.filter(obtainedValue => obtainedValue !== optionValue);
                 setSelectedOptionValues(newValues);
-                setSelectedOptionNames(selectedOptionNames.filter((name) => name !== optionName));
-                if(onChange) onChange(newValues);
+                setSelectedOptionNames(selectedOptionNames.filter(name => name !== optionName));
+                if (onChange) onChange(newValues);
             }
         } else {
-            // If multi-select is not enabled, select the clicked option
             setSelectedOptionValues([optionValue]);
             setSelectedOptionNames([optionName]);
             setIsOpen(false);
-            if(onChange) onChange([optionValue]);
+            if (onChange) onChange([optionValue]);
         }
-    };
+    }
 
     useEffect(() => {
         if (disabled === true) {
@@ -65,18 +82,16 @@ export default function Select({ searchable, options, value, onChange, placehold
 
     useEffect(() => {
         if (!multi && value !== undefined) {
-            // If multi-select is not enabled and a value is provided, update the selected options
-            const selectedOption = options.find((option) => option.value === value);
+            const selectedOption = options.find(option => option.value === value);
             if (selectedOption) {
                 setSelectedOptionValues([selectedOption.value]);
                 setSelectedOptionNames([selectedOption.name]);
             }
         } else {
-            // If multi-select is enabled and a value is provided, update the selected options
-            const selectedOptions = options.filter((option) => value.includes(option.value));
+            const selectedOptions = options.filter(option => value.includes(option.value));
             if (selectedOptions.length > 0) {
-                setSelectedOptionValues(selectedOptions.map((option) => option.value));
-                setSelectedOptionNames(selectedOptions.map((option) => option.name));
+                setSelectedOptionValues(selectedOptions.map(option => option.value));
+                setSelectedOptionNames(selectedOptions.map(option => option.name));
             }
         }
     }, [value, multi, options]);
@@ -87,34 +102,48 @@ export default function Select({ searchable, options, value, onChange, placehold
 
     const setSelectedText = (text) => {
         if (selectedTextRef.current) {
-            selectedTextRef.current.innerHTML = text
+            selectedTextRef.current.innerHTML = text;
         }
     };
 
     useEffect(() => {
-        if(selectedOptionNames.length === 0) setSelectedText('Search...');
+        if (selectedOptionNames.length === 0) setSelectedText('Search...');
         else setSelectedText('');
     }, [selectedOptionNames]);
 
+    if (multi) {
+        filteredOptions.unshift({
+            value: 'selectAll',
+            name: 'Select All',
+        });
+    }
+
     return (
         <div className={`${styles.container} ${className}`} ref={dropdownRef} style={style}>
-            {/* Dropdown button */}
             <div
                 className={styles.dropdownButton}
-                onClick={() => setIsOpen((prev) => (!disabled ? !prev : false))}
+                onClick={() => setIsOpen(prev => (!disabled ? !prev : false))}
             >
                 <div style={{ display: 'flex', width: '100%' }}>
                     <div>
                         {showQuantity ? (placeholder + " (" + selectedOptionNames.length.toString() + ")") : selectedOptionNames.join(', ') || placeholder || (!searchable && 'Select an option')}
                     </div>
-                    {/* Search input (as a div capturing keys) */}
                     {searchable && (
-                        <div ref={selectedTextRef}
-                             contentEditable={true}
-                             suppressContentEditableWarning={true}
-                             onClick={() => {setSelectedText(''); setSearchTerm(''); setIsOpen(true);}}
-                             onInput={(e) => {setSearchTerm(e.currentTarget.textContent); setIsOpen(true);}}
-                             className={styles.searchInput}
+                        <div
+                            ref={selectedTextRef}
+                            contentEditable={true}
+                            suppressContentEditableWarning={true}
+                            onClick={() => {
+                                setSelectedText('');
+                                setSearchTerm('');
+                                setIsOpen(true);
+                            }}
+                            onInput={e => {
+                                setSelectedText('');
+                                setSearchTerm(e.currentTarget.textContent);
+                                setIsOpen(true);
+                            }}
+                            className={styles.searchInput}
                         />
                     )}
                 </div>
@@ -123,27 +152,35 @@ export default function Select({ searchable, options, value, onChange, placehold
                 </div>
             </div>
 
-            {/* Options */}
             <div className={`${styles.dropdownOptions} ${isOpen ? styles.show : ''}`}>
                 {filteredOptions.map((option, index) => (
                     <div
                         key={index}
                         className={`${styles.option} ${
-                            !multi && selectedOptionValues.includes(option.value) ? styles.selected : ''
+                            selectedOptionValues.includes(option.value) ? styles.selected : ''
                         }`}
                         onClick={() => toggleOption(option.value, option.name)}
                     >
-                        {multi && (
-                            <div className={styles.checkbox}>
-                                {selectedOptionValues.includes(option.value) && (
-                                    <FontAwesomeIcon icon={faCheck} color={'#000'} />
+                        {multi && option.value === 'selectAll' ? (
+                            // Render "Select All" or "Deselect All" based on selection status
+                            selectedOptionValues.length === options.length ? 'Deselect All' : 'Select All'
+                        ) : (
+                            <React.Fragment>
+                                {multi && (
+                                    <div className={`${styles.checkbox} ${
+                                        selectedOptionValues.includes(option.value) ? styles.selected : ''
+                                    }`}>
+                                        {selectedOptionValues.includes(option.value) && (
+                                            <FontAwesomeIcon icon={faCheck} color={'#FFF'} />
+                                        )}
+                                    </div>
                                 )}
-                            </div>
+                                {option.name}
+                            </React.Fragment>
                         )}
-                        {option.name}
                     </div>
                 ))}
             </div>
         </div>
     );
-}
+};

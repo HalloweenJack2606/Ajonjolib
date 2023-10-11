@@ -1,6 +1,7 @@
 import './App.css';
 import {useState, useEffect} from "react";
 import { Select, Checkbox } from './inputs/ajonjolinput';
+import SearchBox from "./inputs/searchbox/searchbox";
 
 function App() {
     const options = [
@@ -17,15 +18,17 @@ function App() {
     const [showLuminarias, setShowLuminarias] = useState(true);
 
     useEffect(() => {
-        console.log(showLuminarias)
-    }, [showLuminarias]);
+        console.log(myValues)
+    }, [myValues]);
 
     return (
         <div className="App">
-            <div style={{
-                margin: '1rem',
-            }}>
-                <Select searchable multi options={options} value={myValues} onChange={(data) => setMyValues(data)} showQuantity placeholder={'Grupos'}/>
+            <div>
+                <div style={{
+                    margin: '1rem',
+                }}>
+                    <Select multi options={options} value={myValues} onChange={(data) => setMyValues(data)} showQuantity placeholder={'Grupos'}/>
+                </div>
 
                 <div style={{
                     margin: '1rem'
@@ -35,6 +38,12 @@ function App() {
                     <Checkbox label={'left'} labelPosition={'left'}/>
                     <Checkbox label={'top'} labelPosition={'top'}/>
                     <Checkbox label={'bottom'} labelPosition={'bottom'}/>
+                </div>
+
+                <div style={{
+                    margin: '1rem'
+                }}>
+                    <SearchBox onInput={(val) => console.log(val)} placeholder={'placeholder'}/>
                 </div>
             </div>
         </div>
