@@ -7,7 +7,6 @@ export default function Select({ searchable, options, value, onChange, placehold
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const dropdownRef = useRef(null);
-    const iconRef = useRef(null);
     const [selectedOptionValues, setSelectedOptionValues] = useState([]);
     const [selectedOptionNames, setSelectedOptionNames] = useState([]);
     const selectedTextRef = useRef(null);
@@ -21,16 +20,16 @@ export default function Select({ searchable, options, value, onChange, placehold
     }, []);
 
     const handleOutsideClick = (event) => {
-        if (
-            (dropdownRef.current &&
-                !dropdownRef.current.contains(event.target)) &&
-            (iconRef.current &&
-                !iconRef.current.contains(event.target))
-        ) {
-            if (selectedTextRef.current) {
-                selectedTextRef.current.blur();
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            // Check if the clicked element is an SVG or its parent is an SVG
+            const isSVGClicked = event.target.tagName === 'svg' || event.target.closest('svg');
+
+            if (!isSVGClicked) {
+                if (selectedTextRef.current) {
+                    selectedTextRef.current.blur();
+                }
+                setIsOpen(false);
             }
-            setIsOpen(false);
         }
     };
 

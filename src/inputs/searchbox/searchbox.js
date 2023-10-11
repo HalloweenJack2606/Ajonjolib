@@ -31,6 +31,7 @@ export default function SearchBox({ value, onChange, onInput, className, style, 
                         color: !focused && !searchTerm ? '#999' : '#000',
                     }}
                     contentEditable={true}
+                    suppressContentEditableWarning={true}
                     ref={contentEditableRef}
                     onKeyDown={handleEnterKey}
                     onFocus={() => setFocused(true)}
