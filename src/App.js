@@ -1,7 +1,12 @@
 import './App.css';
 import {useState, useEffect} from "react";
-import { Select, Checkbox } from './inputs/ajonjolinput';
-import SearchBox from "./inputs/searchbox/searchbox";
+import {
+    Select,
+    Checkbox,
+    SearchBox,
+    Text,
+    Button
+} from './inputs/ajonjolinput';
 
 function App() {
     const options = [
@@ -15,6 +20,7 @@ function App() {
     ];
 
     const [myValues, setMyValues] = useState([]);
+    const [textValue, setTextValue] = useState('');
     const [showLuminarias, setShowLuminarias] = useState(true);
 
     useEffect(() => {
@@ -44,6 +50,28 @@ function App() {
                     margin: '1rem'
                 }}>
                     <SearchBox onInput={(val) => console.log(val)} placeholder={'placeholder'}/>
+                </div>
+
+                <div style={{
+                    margin: '1rem'
+                }}>
+                    <Text value={textValue} onChange={(val) => setTextValue(val)} placeholder={'placeholder'}/>
+                </div>
+
+                <div style={{
+                    margin: '1rem',
+                    display: "flex",
+                    justifyContent: "space-between",
+                }}>
+                    <Button variant={'primary'} onSubmit={() => console.log(textValue)} name={'Primary'}/>
+                    <Button variant={'secondary'} onSubmit={() => console.log(textValue)} name={'Secondary'}/>
+                    <Button variant={'success'} onSubmit={() => console.log(textValue)} name={'Success'}/>
+                    <Button variant={'danger'} onSubmit={() => console.log(textValue)} name={'Danger'}/>
+                    <Button variant={'warning'} onSubmit={() => console.log(textValue)} name={'Warning'}/>
+                    <Button variant={'info'} onSubmit={() => console.log(textValue)} name={'Info'}/>
+                    <Button variant={'light'} onSubmit={() => console.log(textValue)} name={'Light'}/>
+                    <Button variant={'dark'} onSubmit={() => console.log(textValue)} name={'Dark'}/>
+                    <Button variant={'link'} onSubmit={() => console.log(textValue)} name={'Link'}/>
                 </div>
             </div>
         </div>
