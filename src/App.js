@@ -5,7 +5,8 @@ import {
     Checkbox,
     SearchBox,
     Text,
-    Button
+    Button,
+    Radio
 } from './inputs/ajonjolinput';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
     ];
 
     const [myValues, setMyValues] = useState([]);
+    const [radioValue, setRadioValue] = useState(null);
     const [textValue, setTextValue] = useState('');
     const [showLuminarias, setShowLuminarias] = useState(true);
 
@@ -72,6 +74,17 @@ function App() {
                     <Button variant={'light'} onSubmit={() => console.log(textValue)} name={'Light'}/>
                     <Button variant={'dark'} onSubmit={() => console.log(textValue)} name={'Dark'}/>
                     <Button variant={'link'} onSubmit={() => console.log(textValue)} name={'Link'}/>
+                </div>
+                <div style={{
+                    margin: '1rem'
+                }}>
+                    <Radio.Group name={'Radio Group 1'} value={radioValue} onChange={(val) => {
+                        setRadioValue(val)
+                    }}>
+                        <Radio.Input value={'one'}/>
+                        <Radio.Input value={'two'}/>
+                        <Radio.Input value={'three'}/>
+                    </Radio.Group>
                 </div>
             </div>
         </div>
