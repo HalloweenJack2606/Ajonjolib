@@ -8,6 +8,8 @@ import {
     Button,
     Radio
 } from './inputs/ajonjolinput';
+import {toast, ToastTypes} from "./toasts/toast/toast";
+import ToastContainer from "./toasts/toast/toast_container";
 
 function App() {
     const options = [
@@ -86,6 +88,9 @@ function App() {
                         <Radio.Input value={'three'}/>
                     </Radio.Group>
                 </div>
+
+                <ToastContainer/>
+                <Button name={'toast'} onSubmit={() => toast("hello", ToastTypes.SUCCESS)}/>
             </div>
         </div>
     );
